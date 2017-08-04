@@ -275,7 +275,7 @@ def CA():
         try:
             return False if BeautifulSoup(response.text, "html.parser").find('input',
                                                                              {'id': 'resumeURL'}).get('value') == \
-                            'https://www.adidas.it/on/demandware.store/Sites-adidas-CA-Site/it_IT/MyAccount-CreateOrLogin' \
+                            'https://www.adidas.ca/on/demandware.store/Sites-adidas-CA-Site/ca_CA/MyAccount-CreateOrLogin' \
                 else True
         except:
             return True
@@ -298,14 +298,14 @@ def CA():
         s = requests.Session()
         s.headers.update(headers)
 
-        r = s.get('https://cp.adidas.it/web/eCom/it_IT/loadcreateaccount')
+        r = s.get('https://cp.adidas.ca/web/eCom/en_CA/loadcreateaccount')
         csrftoken = BeautifulSoup(r.text, "html.parser").find('input', {'name': 'CSRFToken'}).get('value')
 
         s.headers.update({
             'Origin': 'https://cp.adidas.ca',
             'Referer': 'https://cp.adidas.ca/web/eCom/en_CA/loadcreateaccount',
         })
-        r = s.post('https://cp.adidas.it/web/eCom/it_IT/accountcreate',
+        r = s.post('https://cp.adidas.ca/web/eCom/en_CA/accountcreate',
                    data={
                        'firstName': FirstName,
                        'lastName': LastName,
@@ -320,7 +320,7 @@ def CA():
                        '_terms': 'on',
                        'metaAttrs[pageLoadedEarlier]': 'true',
                        'app': 'eCom',
-                       'locale': 'it_IT',
+                       'locale': 'en_CA',
                        'domain': '',
                        'consentData1': 'Sign me up for adidas emails, featuring exclusive offers, featuring latest product info, news about upcoming events, and more. See our <a target="_blank" href="https://www.adidas.com/us/help-topics-privacy_policy.html">Policy Policy</a> for details.',
                        'consentData2': 'By entering my information, I give permission for adidas Canada Limited to contact me in future for marketing, advertising and opinion research for purposes of the adidas Group. I understand I can later withdraw consent.<a target="_blank" href="http://www.adidas.ca/en/help-topics-privacy_policy.html"><b>Learn More</b></a',

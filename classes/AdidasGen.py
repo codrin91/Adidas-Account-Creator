@@ -405,6 +405,102 @@ class AccountGEN:
 					self.log("Account could not be created! Email: %s. Password: %s" % (email,Password),error)
 
 				s.cookies.clear()
+		def IT(self, s, data, NumberofAccounts):
+    		RandPass    = False
+		error       = Fore.RED
+		success     = Fore.GREEN
+		info        = Fore.BLUE
+		FirstName   = data['INFO']['First_Name']
+		LastName    = data['INFO']['Last_Name']
+		Month       = data['INFO']['Month']
+		Day         = data['INFO']['Day']
+		Year        = data['INFO']['Year']
+		Email       = data['INFO']['Email']
+		Password    = data['INFO']['Password']
+
+		if Password  == "":
+			RandPass = True
+
+		if "gmail" not in Email.split('@')[1]:
+			self.log("Sorry This Domain: %s is not Supported!!!" % (Email.split('@')[1]),error)
+			exit()
+
+		self.log("-------------------------------", info)
+		self.log('ADIDAS IT | Account Generator',success)
+		self.log("Nome: %s" % (FirstName))
+		self.log("Cognome: %s"  % (LastName))
+		self.log("Data di nascita: {Month: %s} {Day: %s} {Year: %s} " % (Month,Day,Year))
+		self.log("Password Usata: %s" % (Email.split("@")[0]))
+		self.log('Password Usata: %s' % (Password if Password != '' else "Random Passwords"))
+		self.log("-------------------------------", info)
+		for email in (GmailDotEmailGenerator(Email).generate())[:NumberofAccounts]:
+			headers = {
+							  'User-Agent'               : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36',
+							  'Accept-Encoding'          : 'gzip, deflate, sdch, br',
+							  'Accept-Language'          : 'en-US,en;q=0.8',
+							  'Upgrade-Insecure-Requests': '1'
+					}
+
+			s.headers.update(headers)
+			try:
+				GETCSRF      = s.get('https://cp.adidas.it/web/eCom/it_IT/loadcreateaccount')
+				CSRF         = BeautifulSoup(GETCSRF.text, "html.parser").find('input', {'name': 'CSRFToken'})['value']
+			except:
+				self.log("Could not grab Token! Possible you're Banned!")
+
+			s.headers.update({
+				'Origin': 'https://cp.adidas.it',
+				'Referer': 'https://cp.adidas.it/web/eCom/it_IT/loadcreateaccount'})
+
+
+			if RandPass:
+				length      = 13
+				chars       = string.ascii_letters + string.digits + '$&@?!#%'
+				random.seed = (os.urandom(1024))
+				Password    = ''.join(random.choice(chars) for i in range(length))
+
+			POSTDATA     =   {
+					    'firstName'                      : FirstName,
+					   'lastName'                       : LastName,
+					   'minAgeCheck'                    : 'true',
+					   'day'                            : Day,
+					   'month'                          : Month,
+					   'year'                           : Year,
+					   '_minAgeCheck'                   : 'on',
+					   'email'                          : email,
+					   'password'                       : Password,
+					   'confirmPassword'                : Password,
+					   '_amf'                           : 'on',
+					   'terms'                          : 'true',
+					   '_terms'                         : 'on',
+					   'metaAttrs[pageLoadedEarlier]'   : 'true',
+					   'app'                            : 'eCom',
+					   'locale'                         : 'it_IT',
+					   'domain'                         : '',
+					   'consentData1'                   : 'Sign me up for adidas emails, featuring exclGBive offers, featuring latest product info, news about upcoming events, and more. See our <a target="_blank" href="https://www.adidas.co.uk/GB/help-topics-privacy_policy.html">Policy Policy</a> for details.',
+					   'consentData2'                   : '',
+					   'consentData3'                   : '',
+					   'CSRFToken'                      : CSRF
+							   }
+
+			URL           = 'https://cp.adidas.it/web/eCom/it_IT/accountcreate'
+
+			AccountStatus = self.POST(s, URL, payload=POSTDATA)
+
+			if AccountStatus:
+				self.log("Account Created Successfully! Email: %s. Password: %s" % (email,Password),success)
+				with open('accounts' + '.txt', 'a') as f:
+					f.write('%s:%s\n' % (email, Password))
+					f.close()
+				Sleep = (random.randint(10, 50))
+				self.log("Sleeping for %d seconds" % (Sleep),info)
+				time.sleep(Sleep)
+
+
+			if not AccountStatus:
+				self.log("Account could not be created! Email: %s. Password: %s" % (email,Password),error)
+
+			s.cookies.clear()		
 
 
 

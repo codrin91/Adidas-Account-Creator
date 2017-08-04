@@ -405,8 +405,8 @@ class AccountGEN:
 					self.log("Account could not be created! Email: %s. Password: %s" % (email,Password),error)
 
 				s.cookies.clear()
-		
-	def IT(self, s, data, NumberofAccounts):
+				
+		def IT(self, s, data, NumberofAccounts):
     		RandPass    = False
 		error       = Fore.RED
 		success     = Fore.GREEN
@@ -428,11 +428,11 @@ class AccountGEN:
 
 		self.log("-------------------------------", info)
 		self.log('ADIDAS IT | Account Generator',success)
-		self.log("First Name: %s" % (FirstName))
-		self.log("Last Name: %s"  % (LastName))
-		self.log("Date Of Birth: {Month: %s} {Day: %s} {Year: %s} " % (Month,Day,Year))
-		self.log("Using Email: %s" % (Email.split("@")[0]))
-		self.log('Password Usage: %s' % (Password if Password != '' else "Random Passwords"))
+		self.log("Nome: %s" % (FirstName))
+		self.log("Cognome: %s"  % (LastName))
+		self.log("Data di nascita: {Month: %s} {Day: %s} {Year: %s} " % (Month,Day,Year))
+		self.log("Password Usata: %s" % (Email.split("@")[0]))
+		self.log('Password Usata: %s' % (Password if Password != '' else "Random Passwords"))
 		self.log("-------------------------------", info)
 		for email in (GmailDotEmailGenerator(Email).generate())[:NumberofAccounts]:
 			headers = {
@@ -501,8 +501,7 @@ class AccountGEN:
 			if not AccountStatus:
 				self.log("Account could not be created! Email: %s. Password: %s" % (email,Password),error)
 
-			s.cookies.clear()
-
+			s.cookies.clear()		
 
 
 

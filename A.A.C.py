@@ -43,19 +43,19 @@ with open('config.json') as json_data_file:
 
 Start = AccountGEN(s,config)
 
-log("%s%sRegions US | CA | GB | AU%s" % (Style.BRIGHT,Fore.BLUE,Style.RESET_ALL))
+log("%s%sRegions US | CA | GB | AU | IT%s" % (Style.BRIGHT,Fore.BLUE,Style.RESET_ALL))
 
 while True:
     if Region == "":
         Region           = raw_input("Please Select a Region\t").upper()
-    Checked = True if Region == "US" or Region == "UK" or Region == "GB" or Region == "CA" or Region == "AU" else False
+    Checked = True if Region == "US" or Region == "UK" or Region == "GB" or Region == "CA" or Region == "AU" or Region == "IT" else False
 
     if not Checked:
         log("%sSorry the following domain %s is not supported, or you mis-typed!%s" % (Fore.RED,Region,Style.RESET_ALL))
         Region = ""
 
     if Checked:
-        break 
+        break
 
 if NumberofAccounts == 0:
     NumberofAccounts = int(raw_input("Enter Amount Of Accounts To Generate\t"))
@@ -70,9 +70,5 @@ if Region == "CA":
     Start.CA(s, config, NumberofAccounts)
 if Region == "AU":
     Start.AU(s, config, NumberofAccounts)
-
-
-
-
-
-
+if Region == "IT":
+    Start.IT(s, config, NumberofAccounts)

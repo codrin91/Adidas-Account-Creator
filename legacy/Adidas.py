@@ -340,10 +340,91 @@ def CA():
 
         time.sleep(5)
 
+def IT():
+    print 'WE ARE GENERATING FOR ADIDAS CA'
+    basemail = raw_input('Enter prefix of your email\t')
+    randompass = raw_input('Do you want a random pass? Y for Yes. Any other Key for No\t')
+    if randompass == 'y' and 'y':
+        print 'Generating Random passwords.'
+    else:
+        password = raw_input('Enter Desired Password\t')
+    accountstogen = raw_input('Enter Desired Accounts to be Made\t')
+    accountstogen = int(accountstogen)
+
+    def account_successfully_created(response):
+        try:
+            return False if BeautifulSoup(response.text, "html.parser").find('input',
+                                                                             {'id': 'resumeURL'}).get('value') == \
+                            'https://www.adidas.it/on/demandware.store/Sites-adidas-IT-Site/it_IT/MyAccount-CreateOrLogin' \
+                else True
+        except:
+            return True
+
+    for email in \
+            (GmailDotEmailGenerator(basemail + '@gmail.com').generate())[:accountstogen]:
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.98 Safari/537.36',
+            'Accept-Encoding': 'gzip, deflate, sdch, br',
+            'Accept-Language': 'en-US,en;q=0.8',
+            'Upgrade-Insecure-Requests': '1'
+        }
+        if randompass == 'y' and 'y':
+            length = 13
+            chars = string.ascii_letters + string.digits + '$&@?!#%'
+            random.seed = (os.urandom(1024))
+            password = ''.join(random.choice(chars) for i in range(length))
+
+        s = requests.Session()
+        s.headers.update(headers)
+
+        r = s.get('https://cp.adidas.it/web/eCom/it_IT/loadcreateaccount')
+        csrftoken = BeautifulSoup(r.text, "html.parser").find('input', {'name': 'CSRFToken'}).get('value')
+
+        s.headers.update({
+            'Origin': 'https://cp.adidas.it',
+            'Referer': 'https://cp.adidas.it/web/eCom/it_IT/loadcreateaccount',
+        })
+        r = s.post('https://cp.adidas.it/web/eCom/it_IT/accountcreate',
+                   data={
+                       'firstName': FirstName,
+                       'lastName': LastName,
+                       'minAgeCheck': 'true',
+                       '_minAgeCheck': 'on',
+                       'email': email,
+                       'password': password,
+                       'confirmPassword': password,
+                       'amf': 'true',
+                       '_amf': 'on',
+                       'terms': 'true',
+                       '_terms': 'on',
+                       'metaAttrs[pageLoadedEarlier]': 'true',
+                       'app': 'eCom',
+                       'locale': 'it_IT',
+                       'domain': '',
+                       'consentData1': 'Sign me up for adidas emails, featuring exclusive offers, featuring latest product info, news about upcoming events, and more. See our <a target="_blank" href="https://www.adidas.com/us/help-topics-privacy_policy.html">Policy Policy</a> for details.',
+                       'consentData2': 'By entering my information, I give permission for adidas Canada Limited to contact me in future for marketing, advertising and opinion research for purposes of the adidas Group. I understand I can later withdraw consent.<a target="_blank" href="http://www.adidas.ca/en/help-topics-privacy_policy.html"><b>Learn More</b></a',
+                       'consentData3': '',
+                       'CSRFToken': csrftoken
+                   })
+
+        if account_successfully_created(r) == False:
+            # print 'ACCOUNT EXISTS'
+            print "Username = {0}, Password = {1}, Account EXISTS".format(email, password)
+        if account_successfully_created(r) == True:
+            print "Created Account : Username = {0}, Password = {1}".format(email, password)
+            with open('accounts' + '.txt', 'a') as f:
+                f.write(email + ':' + password + '\n')
+                f.close()
+
+        time.sleep(5)
+
+
+
 
 def main():
     print 'Config Loaded! \n\nUsing First Name: {} \nLast Name: {} \nDate Of Birth \nMonth: {} \nDay: {} \nYear: {} \n' .format(FirstName,LastName,Month,Day,Year)
-    loc = raw_input('ENTER LOC US UK CA AU  \t')
+    loc = raw_input('ENTER LOC US UK CA AU IT  \t')
     if loc == 'UK':
         UK()
     if loc == 'US':
@@ -352,5 +433,7 @@ def main():
         AU()
     if loc == 'CA':
         CA()
+    if loc == 'IT':
+        IT()
 
 main()
